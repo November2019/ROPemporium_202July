@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from pwn import *
+exe = context.binary = ELF('ret2win')
 
 def start(argv=[], *a, **kw):
     '''Start the exploit against the target.'''
